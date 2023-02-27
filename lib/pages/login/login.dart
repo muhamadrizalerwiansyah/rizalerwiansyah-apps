@@ -3,16 +3,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:rizal_erwiansyah/configs/colorStyle.dart';
+import 'package:rizal_erwiansyah/controllers/login_controller.dart';
 
 import '../../configs/constant.dart';
 import '../../routes/route_name.dart';
 
 class LoginPages extends StatelessWidget {
-  const LoginPages({super.key});
+  LoginPages({super.key});
+  final c = Get.find<LoginC>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -89,10 +92,10 @@ class LoginPages extends StatelessWidget {
                               ),
                               Expanded(
                                 child: TextField(
-                                  onChanged: (value) {},
+                                  controller: c.emailController,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Username",
+                                    hintText: "Email",
                                     hintStyle: TextStyle(color: colorGrayLine),
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
@@ -140,7 +143,8 @@ class LoginPages extends StatelessWidget {
                               ),
                               Expanded(
                                 child: TextField(
-                                  onChanged: (value) {},
+                                  obscureText: true,
+                                  controller: c.passwordController,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "Password",
@@ -226,8 +230,10 @@ class LoginPages extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: InkWell(
-                                    onTap: () =>
-                                        Get.toNamed(RouteName.dashboard),
+                                    onTap: () => c.login(c.emailController.text,
+                                        c.passwordController.text),
+                                    // onTap: () =>
+                                    //     Get.toNamed(RouteName.dashboard),
                                     child: Container(
                                       width: MediaQuery.of(context).size.width,
                                       height: 40.h,

@@ -1,4 +1,4 @@
-// ignore_for_file: use_full_hex_values_for_flutter_colors
+// ignore_for_file: use_full_hex_values_for_flutter_colors, unrelated_type_equality_checks
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,8 +6,12 @@ import 'package:get/get.dart';
 import 'package:load/load.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:rizal_erwiansyah/configs/navigator_key.dart';
+import 'package:rizal_erwiansyah/controllers/dashboard_controller.dart';
+import 'package:rizal_erwiansyah/controllers/login_controller.dart';
+import 'package:rizal_erwiansyah/pages/dashboard/dashboard.dart';
 import 'package:rizal_erwiansyah/pages/login/login.dart';
 import 'package:rizal_erwiansyah/routes/app_pages.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'configs/themes.dart';
 
@@ -33,6 +37,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Get.put(LoginC());
+    Get.put(DashboardC());
+    final c = Get.find<DashboardC>();
     return LoadingProvider(
       themeData: LoadingThemeData(tapDismiss: false),
       loadingWidgetBuilder: (ctx, data) {
@@ -55,7 +62,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             navigatorKey: navKey,
-            home: const LoginPages(),
+            home: c.sttusLogin == false ? LoginPages() : DashboardPages(),
             theme: ThemeData(
                 primarySwatch: mcolorscheme,
                 textTheme: textThemeStyle,

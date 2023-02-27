@@ -4,13 +4,18 @@ import 'package:get/get.dart';
 import 'package:rizal_erwiansyah/configs/colorStyle.dart';
 import 'package:rizal_erwiansyah/configs/constant.dart';
 import 'package:rizal_erwiansyah/controllers/dashboard_controller.dart';
+import 'package:rizal_erwiansyah/controllers/login_controller.dart';
+
+import '../../models/EmployeeModel.dart';
+import '../../routes/route_name.dart';
 
 class DashboardPages extends StatelessWidget {
-  const DashboardPages({super.key});
+  DashboardPages({super.key});
+  final c = Get.find<DashboardC>();
+  final l = Get.find<LoginC>();
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<DashboardC>();
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -81,7 +86,7 @@ class DashboardPages extends StatelessWidget {
                                         color: colorBlackGray),
                                   ),
                                   Text(
-                                    "Muhamad Rizal Erwiansyah",
+                                    c.userServiceName.value,
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400,
@@ -96,27 +101,30 @@ class DashboardPages extends StatelessWidget {
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width,
                             // height: 50.h,
-                            child: Container(
-                              width: 30.w,
-                              height: 30.h,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 236, 236, 236),
-                                    blurRadius: 3,
-                                    offset: Offset(1, 1), // Shadow position
-                                  ),
-                                ],
-                                border:
-                                    Border.all(width: 2, color: Colors.white),
-                                // color: colorMain,
-                              ),
-                              child: Icon(
-                                Icons.logout,
-                                size: 15,
-                                color: colorMain,
+                            child: InkWell(
+                              onTap: () => l.logOut(),
+                              child: Container(
+                                width: 30.w,
+                                height: 30.h,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 236, 236, 236),
+                                      blurRadius: 3,
+                                      offset: Offset(1, 1), // Shadow position
+                                    ),
+                                  ],
+                                  border:
+                                      Border.all(width: 2, color: Colors.white),
+                                  // color: colorMain,
+                                ),
+                                child: Icon(
+                                  Icons.logout,
+                                  size: 15,
+                                  color: colorMain,
+                                ),
                               ),
                             ),
                           )),
@@ -191,41 +199,49 @@ class DashboardPages extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 40.h,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 187, 185, 185),
-                                  blurRadius: 3,
-                                  offset: Offset(1, 1), // Shadow position
+                        child: c.userServiceRole.value == "super-admin"
+                            ? InkWell(
+                                onTap: () => Get.toNamed(RouteName.add),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Color.fromARGB(
+                                              255, 187, 185, 185),
+                                          blurRadius: 3,
+                                          offset:
+                                              Offset(1, 1), // Shadow position
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_box,
+                                        size: 20,
+                                        color: colorMain,
+                                      ),
+                                      SizedBox(
+                                        width: 3.w,
+                                      ),
+                                      Text(
+                                        "Add",
+                                        style: TextStyle(
+                                            color: colorMain,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ],
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_box,
-                                size: 20,
-                                color: colorMain,
-                              ),
-                              SizedBox(
-                                width: 3.w,
-                              ),
-                              Text(
-                                "Add",
-                                style: TextStyle(
-                                    color: colorMain,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
                               )
-                            ],
-                          ),
-                        ),
+                            : Container(),
                       ),
                       Expanded(
                           flex: 3,
@@ -276,142 +292,176 @@ class DashboardPages extends StatelessWidget {
               SizedBox(
                 height: 10.h,
               ),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
-              WidgetItemUser(),
+              Obx(
+                () => ListView.builder(
+                    itemCount: c.employee.length,
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.only(top: 0),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      EmployeeModel item = c.employee[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPaddin20,
+                            vertical: kDefaultPaddin5),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50.h,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    width: 40.w,
+                                    height: 40.h,
+                                    decoration: BoxDecoration(
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color.fromARGB(
+                                                255, 214, 214, 214),
+                                            blurRadius: 3,
+                                            offset:
+                                                Offset(1, 1), // Shadow position
+                                          ),
+                                        ],
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/person.png"),
+                                        ),
+                                        border: Border.all(
+                                            width: 2, color: Colors.white),
+                                        color: Colors.white,
+                                        shape: BoxShape.circle),
+                                  )),
+                              Expanded(
+                                  flex: 3,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: kDefaultPaddin5),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.rmName,
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: colorBlackGray),
+                                          ),
+                                          Text(
+                                            item.rmCurrentPosition,
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w400,
+                                                color: colorGrayText),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 2,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: kDefaultPaddin5),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                              flex: 1,
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                child: InkWell(
+                                                  onTap: () => Get.toNamed(
+                                                    RouteName.edit,
+                                                    arguments: item.id,
+                                                  ),
+                                                  child: Container(
+                                                    width: 35.w,
+                                                    height: 35.h,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            boxShadow: [
+                                                          BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    214,
+                                                                    214,
+                                                                    214),
+                                                            blurRadius: 3,
+                                                            offset: Offset(1,
+                                                                1), // Shadow position
+                                                          ),
+                                                        ],
+                                                            color: Colors.white,
+                                                            shape: BoxShape
+                                                                .circle),
+                                                    child: Icon(
+                                                      Icons.edit_outlined,
+                                                      color: colorMain,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
+                                          Expanded(
+                                            flex: 1,
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: InkWell(
+                                                onTap: () =>
+                                                    c.deleteData(item.id),
+                                                child: Container(
+                                                  width: 35.w,
+                                                  height: 35.h,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          boxShadow: [
+                                                        BoxShadow(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              214,
+                                                              214,
+                                                              214),
+                                                          blurRadius: 3,
+                                                          offset: Offset(1,
+                                                              1), // Shadow position
+                                                        ),
+                                                      ],
+                                                          color: Colors.white,
+                                                          shape:
+                                                              BoxShape.circle),
+                                                  child: Icon(
+                                                    Icons.delete_sweep_outlined,
+                                                    color: colorDanger,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+              ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class WidgetItemUser extends StatelessWidget {
-  const WidgetItemUser({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: kDefaultPaddin20, vertical: kDefaultPaddin5),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 50.h,
-        child: Row(
-          children: [
-            Expanded(
-                flex: 1,
-                child: Container(
-                  width: 40.w,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(255, 214, 214, 214),
-                          blurRadius: 3,
-                          offset: Offset(1, 1), // Shadow position
-                        ),
-                      ],
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/person.png"),
-                      ),
-                      border: Border.all(width: 2, color: Colors.white),
-                      color: Colors.white,
-                      shape: BoxShape.circle),
-                )),
-            Expanded(
-                flex: 3,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: kDefaultPaddin5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Muhamad Rizal Erwiansyah",
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: colorBlackGray),
-                        ),
-                        Text(
-                          "Administrator",
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: colorGrayText),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-            Expanded(
-                flex: 2,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: kDefaultPaddin5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Container(
-                                width: 35.w,
-                                height: 35.h,
-                                decoration: const BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 214, 214, 214),
-                                    blurRadius: 3,
-                                    offset: Offset(1, 1), // Shadow position
-                                  ),
-                                ], color: Colors.white, shape: BoxShape.circle),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  color: colorMain,
-                                ),
-                              ),
-                            )),
-                        Expanded(
-                          flex: 1,
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Container(
-                              width: 35.w,
-                              height: 35.h,
-                              decoration: const BoxDecoration(boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 214, 214, 214),
-                                  blurRadius: 3,
-                                  offset: Offset(1, 1), // Shadow position
-                                ),
-                              ], color: Colors.white, shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.delete_sweep_outlined,
-                                color: colorDanger,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ))
-          ],
         ),
       ),
     );

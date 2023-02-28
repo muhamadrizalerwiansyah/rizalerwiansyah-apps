@@ -44,6 +44,9 @@ dependencies:
   rflutter_alert: ^2.0.4
   shared_preferences: ^2.0.17
   dropdown_button2: ^1.8.1
+  excel: ^2.0.1
+  path_provider: ^2.0.13
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:

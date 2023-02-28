@@ -6,7 +6,6 @@ import 'package:load/load.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:rizal_erwiansyah/pages/dashboard/dashboard.dart';
 import 'package:rizal_erwiansyah/pages/login/login.dart';
-import 'package:rizal_erwiansyah/routes/route_name.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../configs/colorStyle.dart';

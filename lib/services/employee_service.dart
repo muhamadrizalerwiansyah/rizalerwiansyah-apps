@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 
+import '../models/EmployeeModel.dart';
+
 class EmployeeProvider extends GetConnect {
-  final url = "http://172.20.10.3:8000/api/";
+  final url = "http://10.0.41.11:8000/api/";
   var mainHeaders = {
     'Content-Type': 'application/json; charset=UTF-8',
   };

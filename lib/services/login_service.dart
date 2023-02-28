@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 class LoginProvider extends GetConnect {
-  final url = "http://172.20.10.3:8000/api/login-apps";
+  final url = "http://10.0.41.11:8000/api/login-apps";
   var mainHeaders = {
     'Content-Type': 'application/json; charset=UTF-8',
   };

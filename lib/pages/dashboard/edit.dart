@@ -9,19 +9,38 @@ import 'package:rizal_erwiansyah/models/EmployeeModel.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../controllers/edit_controller.dart';
 
-class EditPages extends StatelessWidget {
+class EditPages extends StatefulWidget {
+  const EditPages({super.key});
+
+  @override
+  State<EditPages> createState() => _EditPagesState();
+}
+
+class _EditPagesState extends State<EditPages> {
   final c = Get.find<DashboardC>();
+
   final edit = Get.find<EditC>();
   final String uid = Get.arguments;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  _getData() async {
     final EmployeeModel employee = c.employeeById(uid);
-    c.rmBranchIdController.text = employee.rmBranchId;
-    c.rmRepIdController.text = employee.rmRepId;
-    c.rmNameController.text = employee.rmName;
-    c.rmCurrentController.text = employee.rmCurrentPosition;
-    c.rmManagerController.text = employee.rmManagerId;
+    setState(() {
+      c.rmBranchIdController.text = employee.rmBranchId;
+      c.rmRepIdController.text = employee.rmRepId;
+      c.rmNameController.text = employee.rmName;
+      c.rmCurrentController.text = employee.rmCurrentPosition;
+      c.rmManagerController.text = employee.rmManagerId;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,

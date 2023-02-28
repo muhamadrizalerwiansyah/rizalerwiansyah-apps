@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:load/load.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:rizal_erwiansyah/models/EmployeeModel.dart';
 import 'package:rizal_erwiansyah/services/employee_service.dart';
@@ -23,6 +26,7 @@ class DashboardC extends GetxController {
   late TextEditingController rmNameController;
   late TextEditingController rmCurrentController;
   late TextEditingController rmManagerController;
+  late TextEditingController searchController;
 
   @override
   void onInit() async {
@@ -32,6 +36,7 @@ class DashboardC extends GetxController {
     rmNameController = TextEditingController();
     rmCurrentController = TextEditingController();
     rmManagerController = TextEditingController();
+    searchController = TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('user') != null) {
       dynamic user = jsonDecode(prefs.getString('user').toString());
@@ -138,7 +143,6 @@ class DashboardC extends GetxController {
       EmployeeProvider()
           .editData(id, rmBranch, rmRep, rmName, rmCurrentPosition, rmManager)
           .then((value) {
-        print(value.body);
         if (value.body['status'] == true) {
           employee.removeWhere((element) => element.id == id);
           employee.add(EmployeeModel(
@@ -216,6 +220,14 @@ class DashboardC extends GetxController {
     return _deleted;
   }
 
+  Future<void> downloadExcelFile() async {
+    var response =
+        await Get.to<String>('http://10.0.41.11:8000/api/employee-export');
+    var dir = await getExternalStorageDirectory();
+    var file = File('${dir?.path}/exported_data.xlsx');
+    await file.writeAsString(response!);
+  }
+
   @override
   void onClose() {
     rmBranchIdController.dispose();
@@ -223,6 +235,7 @@ class DashboardC extends GetxController {
     rmNameController.dispose();
     rmCurrentController.dispose();
     rmManagerController.dispose();
+    searchController.dispose();
     super.onClose();
   }
 }
